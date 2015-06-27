@@ -1,4 +1,4 @@
-FROM cb
+FROM artburkart/docker-chicagoboss
 MAINTAINER Arthur Burkart <artburkart@gmail.com>
 
 # INSTALL APP

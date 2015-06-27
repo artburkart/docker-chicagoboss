@@ -16,7 +16,7 @@ Use it to develop an Erlang web app using Chicago Boss without worrying about an
 
 1.   The idea is that you use this image as the foundation for another image that runs your app
 
-1.   Create a `supervisord.conf` file:
+2.   Create a `supervisord.conf` file:
 
   ```
   [supervisord]
@@ -32,10 +32,10 @@ Use it to develop an Erlang web app using Chicago Boss without worrying about an
   ```
   <sub>NOTE: This is probably not ideal, but I'm not sure how else to keep the instance alive throughout development.</sub>
 
-1.   Create a Dockerfile that looks like the following:
+3.   Create a Dockerfile that looks like the following:
 
   ```
-  FROM cb
+  FROM artburkart/docker-chicagoboss
 
   # INSTALL APP
   COPY ./app /app  # `make app PROJECT=app`
@@ -53,18 +53,18 @@ Use it to develop an Erlang web app using Chicago Boss without worrying about an
   CMD ["/usr/bin/supervisord"]
   ```
 
-1.   Build the Dockerfile
+4.   Build the Dockerfile
 
   `docker build -t app-image .`
 
-1.   Run the container
+5.   Run the container
 
   `docker run -v /path/to/your/app:/app -p 8001:8001 -d --name app app-image`
 
-1.   From here you can connect to the Docker container directly
+6.   From here you can connect to the Docker container directly
 
   `docker exec -it app /bin/bash`
 
-1.   Or you can edit the files in your `/path/to/your/app` directory and see that your changes are reflected in the container
+7.   Or you can edit the files in your `/path/to/your/app` directory and see that your changes are reflected in the container
 
 
