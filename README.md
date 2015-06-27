@@ -11,10 +11,10 @@ Docker container images that include [Chicago Boss](http://chicagoboss.org/)
 Use it to build and deploy web apps using Dockerized Chicago Boss.
 Use it to develop an Erlang web app using Chicago Boss without worrying about any of the setup.
 
-## Usage
+## Developing with an already existent Chicago Boss web app
 ###### (Scaffolding for the following exists in sample_app. It's meant to serve as an example, but IS NOT FUNCTIONAL, because I didn't want to include the 23MB of Chicago Boss web app in my Dockerfile repo.)
 
-1.   The idea is that you use this image as the foundation for another image that runs your app
+1.   Make a directory on your local machine that looks like the [sample_app](sample_app) directory in this repo
 
 2.   Create a `supervisord.conf` file:
 
@@ -53,18 +53,68 @@ stdout_logfile=/var/log/supervisor_logs/app.out.log
   CMD ["/usr/bin/supervisord"]
   ```
 
-4.   Build the Dockerfile
+4.   Move your existing project's code into the `app` directory
+
+5.   Build the Dockerfile
 
   `docker build -t app-image .`
 
-5.   Run the container
+6.   Run the container
 
   `docker run -v /path/to/your/app:/app -p 8001:8001 -d --name app app-image`
 
-6.   From here you can connect to the Docker container directly
+7.   From here you can connect to the Docker container directly
 
   `docker exec -it app /bin/bash`
 
-7.   Or you can edit the files in your `/path/to/your/app` directory and see that your changes are reflected in the container
+8.   Or you can edit the files in your `/path/to/your/app` directory and see that your changes are reflected in the container
+
+## Developing an app from scratch
+###### I assume we have a folder named after your project and it contains your Dockerfile and a folder named 'app' (your project's code)
+
+1.   Follow steps 1-3 above
+
+2.   Create an empty folder and name it `app`
+
+3.   Build the Dockerfile
+
+  `docker build -t app-image .`
+
+4.   Initialize your app inside a throwaway container (this creates the base web server on your local machine without requiring Erlang or Chicago Boss to be installed on it)
+
+  `docker run -v $(pwd)/app:/app --entrypoint /bin/bash app-image -c 'cd /ChicagoBoss && make app PROJECT=app'`
+
+5.   Fire up a daemonized container named `app` with your web server running in it
+
+  `docker run -v $(pwd)/app:/app -p 8001:8001 -d --name app app-image`
+
+6.   If you go to [http://localhost:8001](http://localhost:8001), you should see a message that says "No routes matched the requested URL."
+
+  - Cash money!
+
+7.   Now that your container is running, you can open your favorite text editor and edit any file in the `app` folder on your local machine
+
+  - All changes will be reflected in your container immediately, so you can develop just like you normally would if the web server was running directly on your local machine
+
+8.   If, for some reason, you need to gain access to the container's terminal, you can run the following:
+
+  `docker exec -it app bash`
+
+9.   Unless you create a startup script to start your Docker container, you will need to turn it back on when you reboot your machine.
+
+  `docker start app`
+
+## If you're on OSX
+
+1.   Since docker can't run natively in OSX, it runs inside a vagrant instance. I use Boot2Docker, but its setup is outside the scope of this README.
+
+2.   If you have it running and all the above worked for you, then the last step is to run `boot2docker ip`
+
+  - Let's say `boot2docker ip` returns 192.168.59.103, then your server is accessible from http://192.168.59.103:8001/
+
+
+
+
+
 
 
