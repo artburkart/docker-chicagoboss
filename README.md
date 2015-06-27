@@ -19,16 +19,16 @@ Use it to develop an Erlang web app using Chicago Boss without worrying about an
 2.   Create a `supervisord.conf` file:
 
   ```
-  [supervisord]
-  nodaemon=true
+[supervisord]
+nodaemon=true
 
-  [program:app]
-  command=/app/init-dev.sh
-  autostart=true
-  autorestart=true
-  priority=0
-  stderr_logfile=/var/log/supervisor_logs/app.err.log
-  stdout_logfile=/var/log/supervisor_logs/app.out.log
+[program:app]
+command=/app/init-dev.sh
+autostart=true
+autorestart=true
+priority=0
+stderr_logfile=/var/log/supervisor_logs/app.err.log
+stdout_logfile=/var/log/supervisor_logs/app.out.log
   ```
   <sub>NOTE: This is probably not ideal, but I'm not sure how else to keep the instance alive throughout development.</sub>
 
